@@ -70,7 +70,7 @@ class ProductManager {
     const indiceProd = contentObj.findIndex((prod) => prod.id === id);
     if (indiceProd >= 0) {
       contentObj.splice(indiceProd, 1);
-        const newObj = JSON.stringify(contentObj);
+      const newObj = JSON.stringify(contentObj);
       await fs.promises.writeFile(this.path, newObj, (error) => {
         if (error) {
           console.log("ERROR", error.message);
