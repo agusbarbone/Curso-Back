@@ -1,8 +1,8 @@
 import fs from "fs";
 
-const file = "./products.json";
 
-class ProductManager {
+
+export default class ProductManager {
   static productId = 0;
   constructor(path) {
     this.path = path;
@@ -26,7 +26,7 @@ class ProductManager {
       encoding: "utf-8",
     });
     const contentObj = await JSON.parse(content);
-    console.log(contentObj);
+    return contentObj
   }
 
   async getProductById(id) {
@@ -83,16 +83,8 @@ class ProductManager {
   }
 }
 
-const manager1 = new ProductManager(file);
-const newProduct = {
-  title: "guitarra",
-  description: "electrica",
-  price: 2000,
-  thumbnail: "URL",
-  code: "abc1",
-  stock: 2000,
-};
-manager1.getProducts();
+
+// manager1.getProducts();
 // manager1.addProduct(newProduct);
 // manager1.getProducts();
 // manager1.getProductById(1);
