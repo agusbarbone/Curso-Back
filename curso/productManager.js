@@ -1,7 +1,5 @@
 import fs from "fs";
 
-
-
 export default class ProductManager {
   static productId = 0;
   constructor(path) {
@@ -10,10 +8,10 @@ export default class ProductManager {
   }
 
   async addProduct(prod) {
-    ProductManager.productId++;
-    prod.id = ProductManager.productId;
-    this.products.push(prod);
-    const objJson = JSON.stringify(this.products);
+    const arrayProducts = await this.getProducts();
+    prod.id = arrayProducts.length;
+    arrayProducts.push(prod);
+    const objJson = JSON.stringify(arrayProducts);
     await fs.promises.writeFile(this.path, objJson, (error) => {
       if (error) {
         console.log("ERROR", error.message);
@@ -26,7 +24,19 @@ export default class ProductManager {
       encoding: "utf-8",
     });
     const contentObj = await JSON.parse(content);
-    return contentObj
+    return contentObj;
+  }
+
+  async getProductsWithLimit(limit) {
+    const content = await fs.promises.readFile(this.path, {
+      encoding: "utf-8",
+    });
+    const contentObj = await JSON.parse(content);
+    const response = [];
+    for (let index = 0; index < limit; index++) {
+      response.push(contentObj[index]);
+    }
+    return response;
   }
 
   async getProductById(id) {
@@ -36,68 +46,40 @@ export default class ProductManager {
     const contentObj = await JSON.parse(content);
     const prodBuscado = contentObj.find((prod) => prod.id === id);
     if (prodBuscado) {
-      console.log(prodBuscado);
+      return prodBuscado;
     } else {
-      console.log("no se pudo encontrar el producto buscado");
+      throw new Error("no se encontro el prod buscado");
     }
   }
 
   async updateProduct(id, data) {
-    const content = await fs.promises.readFile(this.path, {
-      encoding: "utf-8",
+    const products = await this.getProducts();
+    const nuevoArray = products.map(obj => {
+      if (obj.id === id) {
+        const prodModificado = {...obj, ...data}
+        return prodModificado;
+      } else {
+        return obj;
+      }
     });
-    const contentObj = await JSON.parse(content);
-    const indiceProd = contentObj.findIndex((prod) => prod.id === id);
-    if (indiceProd >= 0) {
-      contentObj[indiceProd] = data;
-      console.log(contentObj);
-      const newObj = JSON.stringify(contentObj);
-      await fs.promises.writeFile(this.path, newObj, (error) => {
-        if (error) {
-          console.log("ERROR", error.message);
-        }
-      });
-    } else {
-      console.log("no se encontro al producto");
+    const newObj = JSON.stringify(nuevoArray);
+    try {
+      await fs.promises.writeFile(this.path, newObj);
+      return nuevoArray;
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
     }
   }
 
   async deleteProduct(id) {
-    const content = await fs.promises.readFile(this.path, {
-      encoding: "utf-8",
+    const products = await this.getProducts();
+    const nuevoArray = products.filter((objeto) => objeto.id !== id); 
+    const newObj = JSON.stringify(nuevoArray);
+    await fs.promises.writeFile(this.path, newObj, (error) => {
+      if (error) {
+        throw new Error(`Error: ${error}`);
+      }
     });
-    const contentObj = await JSON.parse(content);
-    const indiceProd = contentObj.findIndex((prod) => prod.id === id);
-    if (indiceProd >= 0) {
-      contentObj.splice(indiceProd, 1);
-      const newObj = JSON.stringify(contentObj);
-      await fs.promises.writeFile(this.path, newObj, (error) => {
-        if (error) {
-          console.log("ERROR", error.message);
-        }
-      });
-      console.log("producto eliminado satisfactoriamente");
-    } else {
-      console.log("producto no encontrado");
-    }
+    return nuevoArray
   }
 }
-
-
-// manager1.getProducts();
-// manager1.addProduct(newProduct);
-// manager1.getProducts();
-// manager1.getProductById(1);
-// manager1.getProductById(2);
-// manager1.updateProduct(1, {
-//   title: "bajo",
-//   description: "electrica",
-//   price: 50000,
-//   thumbnail: "URL",
-//   code: "abc1",
-//   stock: 2000,
-// });
-// manager1.updateProduct(20);
-// manager1.deleteProduct(1);
-// manager1.deleteProduct(2);
-// manager1.getProducts();
