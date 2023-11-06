@@ -6,33 +6,34 @@ const router = Router();
 
 const PATH = `${__dirname}data\\products.json`;
 
-
-router.get("/",async (req, res) => {
-    try {
-        const products = await new ProductManager(PATH).getProducts()
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(400).json(error)
-    }
+router.get("/", async (req, res) => {
+  try {
+    const products = await new ProductManager(PATH).getProducts();
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 router.get("/limit", async (req, res) => {
-    try {
-        const products = await new ProductManager(PATH).getProductsWithLimit(req.query.limit)
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(400).json(error)
-    }
+  try {
+    const products = await new ProductManager(PATH).getProductsWithLimit(
+      req.query.limit
+    );
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 router.get("/:pid", async (req, res) => {
-    try {
-        const pid = Number(req.params.pid)
-        const products = await new ProductManager(PATH).getProductById(pid)
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(400).json({ error: error.message})
-    }
+  try {
+    const pid = Number(req.params.pid);
+    const products = await new ProductManager(PATH).getProductById(pid);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -60,21 +61,26 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:pid", async (req, res) => {
-    try {
-        const products = await new ProductManager(PATH).updateProduct(Number(req.params.pid), req.body)
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(400).json(error)
-    }
+  try {
+    const products = await new ProductManager(PATH).updateProduct(
+      Number(req.params.pid),
+      req.body
+    );
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 router.delete("/:pid", async (req, res) => {
-    try {
-        const products = await new ProductManager(PATH).deleteProduct(Number(req.params.pid))
-        res.status(200).json(products)
-    } catch (error) {
-        res.status(400).json(error)
-    }
+  try {
+    const products = await new ProductManager(PATH).deleteProduct(
+      Number(req.params.pid)
+    );
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 export default router;

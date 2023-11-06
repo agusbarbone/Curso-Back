@@ -1,21 +1,17 @@
-import { Router } from 'express'
+import { Router } from "express";
 
-const router = Router()
+const router = Router();
 
-const cart = []
+const cart = [];
 
-let idCounter = 0
+let idCounter = 0;
 
-router.post('/', (req, res) => {
-    res.status(200).send(req.body)
-})
+router.post("/", (req, res) => {
+  res.status(200).send(req.body);
+});
 
-router.get('/:cid', (req, res) => {
+router.get("/:cid", (req, res) => {});
 
-})
+router.post("/:cid/product/:pid", (req, res) => {});
 
-router.post('/:cid/product/:pid', (req, res) => {
-
-})
-
-export default router
+export default router;

@@ -54,9 +54,9 @@ export default class ProductManager {
 
   async updateProduct(id, data) {
     const products = await this.getProducts();
-    const nuevoArray = products.map(obj => {
+    const nuevoArray = products.map((obj) => {
       if (obj.id === id) {
-        const prodModificado = {...obj, ...data}
+        const prodModificado = { ...obj, ...data };
         return prodModificado;
       } else {
         return obj;
@@ -73,13 +73,13 @@ export default class ProductManager {
 
   async deleteProduct(id) {
     const products = await this.getProducts();
-    const nuevoArray = products.filter((objeto) => objeto.id !== id); 
+    const nuevoArray = products.filter((objeto) => objeto.id !== id);
     const newObj = JSON.stringify(nuevoArray);
     await fs.promises.writeFile(this.path, newObj, (error) => {
       if (error) {
         throw new Error(`Error: ${error}`);
       }
     });
-    return nuevoArray
+    return nuevoArray;
   }
 }
