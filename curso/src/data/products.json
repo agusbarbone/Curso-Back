@@ -13,7 +13,7 @@
     "title": "t",
     "description": "x",
     "code": "x",
-    "price": "xx",
+    "price": 200,
     "status": true,
     "stock": 80,
     "category": "x",
