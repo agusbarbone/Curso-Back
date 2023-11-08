@@ -26,7 +26,7 @@ export default class cartManager {
     const arrayCarts = await this.getCart();
     const prodExists = arrayProducts.some((prod) => prod.id === prodID);
     const cartExists = arrayCarts.some((cart) => cart.id === cartID);
-    let updatedCartArray = []
+    let updatedCartArray = [];
     if (prodExists && cartExists) {
       const searchedCart = arrayCarts.find(
         (cart) => cart.id === cartID,
@@ -44,14 +44,14 @@ export default class cartManager {
           }
         }
       );
-        updatedCartArray = arrayCarts.map(
+      updatedCartArray = arrayCarts.map(
         (cart) => cart.id === cartID,
         () => {
           cart = searchedCart;
         }
       );
     }
-    
+
     const cartJson = JSON.stringify(updatedCartArray);
     await this.saveCart(cartJson);
     return updatedCartArray;
@@ -72,5 +72,19 @@ export default class cartManager {
     });
     const contentObj = await JSON.parse(content);
     return contentObj;
+  }
+  
+  async getCartById(id) {
+    const CARTID = Number(id)
+    const content = await fs.promises.readFile(this.cartpath, {
+      encoding: "utf-8",
+    });
+    const contentObj = await JSON.parse(content);
+    const cartBuscado = contentObj.find((prod) => prod.id === CARTID);
+    if (cartBuscado) {
+      return cartBuscado;
+    } else {
+      throw new Error("no se encontro el prod buscado");
+    }
   }
 }

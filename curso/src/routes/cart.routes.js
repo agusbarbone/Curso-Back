@@ -20,7 +20,7 @@ router.post("/",async (req, res) => {
 router.get("/:cid", async (req, res) => {
   try {
     const cartController = new cartManager(CARTPATH, PRODUCTPATH)
-    const cart = await cartController.getCart()
+    const cart = await cartController.getCartById(req.params.cid)
     res.status(200).json(cart)
   } catch (error) {
     res.status(400).json({error: error.message })

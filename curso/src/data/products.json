@@ -1,9 +1,9 @@
 [
   {
-    "title": "t",
+    "title": "r",
     "description": "x",
     "code": "x",
-    "price": "x",
+    "price": 200,
     "status": true,
     "stock": 2,
     "category": "x",
