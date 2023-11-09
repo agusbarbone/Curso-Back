@@ -1,36 +1,27 @@
 import { Router } from "express";
-import ProductManager from "../../productManager.js";
+import ProductManager from '../managers/productManager.js'
+import { FileSystemRepository } from '../repository/fileSystemRepository.js'
 import { __dirname } from "../utils.js";
 
 const router = Router();
 
-const PATH = `${__dirname}data\\products.json`;
-
-router.get("/", async (req, res) => {
+router.get("/:limit?", async (req, res) => {
   try {
-    const products = await new ProductManager(PATH).getProducts();
-    res.status(200).json(products);
+    const fileSystemRepository = new FileSystemRepository()
+    const productManager = new ProductManager(fileSystemRepository);         
+    const products = await productManager.getProducts(req.params.limit)
+    res.status(200).json(products);    
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
-router.get("/limit", async (req, res) => {
+router.get("/byId/:pid", async (req, res) => {
   try {
-    const products = await new ProductManager(PATH).getProductsWithLimit(
-      req.query.limit
-    );
-    res.status(200).json(products);
-  } catch (error) {
-    res.status(400).json(error);
-  }
-});
-
-router.get("/:pid", async (req, res) => {
-  try {
-    const pid = Number(req.params.pid);
-    const products = await new ProductManager(PATH).getProductById(pid);
-    res.status(200).json(products);
+    const fileSystemRepository = new FileSystemRepository()
+    const productManager = new ProductManager(fileSystemRepository);
+    const product = await productManager.getProductById(Number(req.params.pid),req.body);
+    res.status(200).json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -48,8 +39,9 @@ router.post("/", async (req, res) => {
       data.stock &&
       data.category
     ) {
-      const newProduct = new ProductManager(PATH);
-      await newProduct.addProduct(data);
+      const fileSystemRepository = new FileSystemRepository()
+      const productManager = new ProductManager(fileSystemRepository);
+      await productManager.createProduct(data);
       res.status(200).json(data);
     } else {
       throw new Error("falto algun dato");
@@ -62,24 +54,23 @@ router.post("/", async (req, res) => {
 
 router.put("/:pid", async (req, res) => {
   try {
-    const products = await new ProductManager(PATH).updateProduct(
-      Number(req.params.pid),
-      req.body
-    );
-    res.status(200).json(products);
+    const fileSystemRepository = new FileSystemRepository()
+    const productManager = new ProductManager(fileSystemRepository);
+    await productManager.updateProduct(Number(req.params.pid),req.body);
+    res.status(200).json(req.body);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({error: error.message});
   }
 });
 
 router.delete("/:pid", async (req, res) => {
   try {
-    const products = await new ProductManager(PATH).deleteProduct(
-      Number(req.params.pid)
-    );
+    const fileSystemRepository = new FileSystemRepository()
+    const productManager = new ProductManager(fileSystemRepository);
+    const products = await productManager.deleteProduct(Number(req.params.pid),req.body);
     res.status(200).json(products);
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({error: error.message});
   }
 });
 
