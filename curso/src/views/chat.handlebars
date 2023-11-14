@@ -1,0 +1,18 @@
+<div>
+  Hola
+  <button onClick="sendMessage()">enviar</button>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socketClient = io()
+
+  socketClient.on('confirmation', data => {
+    console.log(data)
+    console.log('confirmation')
+  })
+
+  const sendMessage = () => {
+    socketClient.emit('message', { content: "hola chiieee"})
+  }
+</script>
