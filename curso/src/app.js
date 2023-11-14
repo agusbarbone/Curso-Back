@@ -6,6 +6,8 @@ import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import viewsRouter from "./routes/views.routes.js";
 import { __dirname, __filename } from "./utils.js";
+import ProductManager from "./managers/productManager.js";
+import { FileSystemRepository } from "./repository/fileSystemRepository.js";
 
 const PORT = 8080;
 
@@ -15,8 +17,14 @@ const httpServer = app.listen(PORT, () => {
 });
 const socketServer = new Server(httpServer);
 
+const fileSystemRepository = new FileSystemRepository()
+const productManager = new ProductManager(fileSystemRepository);
+const prods = await productManager.getProducts()
+
+
 socketServer.on("connection", (socket) => {
   console.log(socket.id);
+  socket.emit('prods', prods)
 
   socket.on('message', data => {
     console.log(data)

@@ -1,1 +1,32 @@
-[{"title":"r","description":"x","code":"x","price":200,"status":true,"stock":2,"category":"x","id":0},{"title":"t","description":"x","code":"x","price":200,"status":true,"stock":80,"category":"x","id":1},{"title":"lol","description":"x","code":"x","price":200,"status":true,"stock":2,"category":"x","id":2}]
+[
+  {
+    "title": "guitarra",
+    "description": "x",
+    "code": "x",
+    "price": 100,
+    "status": true,
+    "stock": 2,
+    "category": "x",
+    "id": 0
+  },
+  {
+    "title": "bajo",
+    "description": "x",
+    "code": "x",
+    "price": 200,
+    "status": true,
+    "stock": 80,
+    "category": "x",
+    "id": 1
+  },
+  {
+    "title": "teclado",
+    "description": "x",
+    "code": "x",
+    "price": 200,
+    "status": true,
+    "stock": 2,
+    "category": "x",
+    "id": 2
+  }
+]

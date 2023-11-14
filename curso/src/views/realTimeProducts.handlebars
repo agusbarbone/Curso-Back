@@ -1,0 +1,17 @@
+<div>
+  <h1>Productos:</h1>
+  <ul>
+    {{#each prods}}
+      <li>{{this.title}} {{this.price}}</li>
+    {{/each}}
+  </ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socketClient = io()
+
+  socketClient.on('prods', data => {
+    console.log(data, 'Conectado')
+  }) 
+</script>
