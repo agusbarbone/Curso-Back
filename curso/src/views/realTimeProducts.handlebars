@@ -1,6 +1,6 @@
 <div>
   <h1>Productos:</h1>
-  <ul>
+  <ul id="listaProductos">
     {{#each prods}}
       <li>{{this.title}} {{this.price}}</li>
     {{/each}}
@@ -9,9 +9,20 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+
   const socketClient = io()
 
-  socketClient.on('prods', data => {
-    console.log(data, 'Conectado')
-  }) 
+  socketClient.on('prods', async data => {
+    console.log(data.prods, 'Socket Conectado')
+  })
+
+//  async function showProducts(data) {
+//  console.log("mostrar ", data);
+//  const fetchTemplateHbs = await fetch("/index.handlebars");
+//  const templateHbs = await fetchTemplateHbs.text();
+//  const template = Handlebars.compile(templateHbs);
+//  const html = template({ products: data });
+// document.querySelector("#list-products").innerHTML = html;
+//  
+// } 
 </script>

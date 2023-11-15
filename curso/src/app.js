@@ -24,7 +24,7 @@ const prods = await productManager.getProducts()
 
 socketServer.on("connection", (socket) => {
   console.log(socket.id);
-  socket.emit('prods', prods)
+  socket.emit('prods', {prods: prods})
 
   socket.on('message', data => {
     console.log(data)

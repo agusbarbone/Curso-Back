@@ -18,8 +18,11 @@ router.get("/chat", (req, res) => {
   res.render("chat", { msg: "hola" });
 });
 
-router.get("/realtimeproducts", (req, res) => {
-    res.render("realTimeProducts");
+router.get("/realtimeproducts",async (req, res) => {
+  const prods = await productManager.getProducts()
+    res.render("realTimeProducts", {
+      prods: prods
+    });
   });
 
 export default router;
