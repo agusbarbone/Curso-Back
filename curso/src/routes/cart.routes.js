@@ -1,6 +1,6 @@
 import { Router } from "express";
-import CartManager from '../managers/cartManager.js'
-import ProductManager from '../managers/productManager.js'
+import CartManager from '../dao/managers/cartManager.js'
+import ProductManager from '../dao/managers/productManager.js'
 import { __dirname } from "../utils.js";
 import { FileSystemRepository } from '../repository/fileSystemRepository.js'
 

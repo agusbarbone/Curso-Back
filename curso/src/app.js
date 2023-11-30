@@ -1,12 +1,13 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
 
 import productRouter from "./routes/products.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import viewsRouter from "./routes/views.routes.js";
 import { __dirname, __filename } from "./utils.js";
-import ProductManager from "./managers/productManager.js";
+import ProductManager from "./dao/managers/productManager.js";
 import { FileSystemRepository } from "./repository/fileSystemRepository.js";
 
 const PORT = 8080;
@@ -17,22 +18,28 @@ const httpServer = app.listen(PORT, () => {
 });
 const socketServer = new Server(httpServer);
 
-const fileSystemRepository = new FileSystemRepository()
+const fileSystemRepository = new FileSystemRepository();
 const productManager = new ProductManager(fileSystemRepository);
-const prods = await productManager.getProducts()
-
+const prods = await productManager.getProducts();
+const mongooseURI = "mongodb+srv://abarbone:K0C477MrNAlpgjFO@ecommerce.xgrnaco.mongodb.net/";
 
 socketServer.on("connection", (socket) => {
   console.log(socket.id);
-  socket.emit('prods', {prods: prods})
+  socket.emit("prods", { prods: prods });
 
-  socket.on('message', data => {
-    console.log(data)
-    socket.emit('confirmation', data.content)
-  })
+  socket.on("message", (data) => {
+    console.log(data);
+    socket.emit("confirmation", data.content);
+  });
 });
 
 app.use(express.json());
+try {
+  mongoose.connect(mongooseURI).then(() => console.log("Base de datos conectada"));
+} catch (error) {
+  console.log(`Error al iniciar servidor (${error.message})`);
+}
+
 app.use(express.urlencoded({ extended: true }));
 
 app.engine("handlebars", handlebars.engine());

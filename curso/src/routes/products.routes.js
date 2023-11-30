@@ -1,77 +1,36 @@
-import { Router } from "express";
-import ProductManager from '../managers/productManager.js'
-import { FileSystemRepository } from '../repository/fileSystemRepository.js'
-import { __dirname } from "../utils.js";
+import { Router } from 'express'
+import { uploader } from '../uploader.js'
+import { ProductController } from '../dao/controllers/product.controller.mdb.js'
 
-const router = Router();
+const router = Router()
+const controller = new ProductController()
 
-router.get("/:limit?", async (req, res) => {
-  try {
-    const fileSystemRepository = new FileSystemRepository()
-    const productManager = new ProductManager(fileSystemRepository);         
-    const products = await productManager.getProducts(req.params.limit)
-    res.status(200).json(products);    
-  } catch (error) {
-    res.status(400).json(error);
-  }
-});
+router.get('/', async (req, res) => {
+    const products = await controller.getProducts()
+    res.status(200).send({ status: 'OK', data: products })
+})
 
-router.get("/byId/:pid", async (req, res) => {
-  try {
-    const fileSystemRepository = new FileSystemRepository()
-    const productManager = new ProductManager(fileSystemRepository);
-    const product = await productManager.getProductById(Number(req.params.pid),req.body);
-    res.status(200).json(product);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+router.post('/', uploader.single('thumbnail'), async (req, res) => {
+    if (!req.file) return res.status(400).send({ status: 'FIL', data: 'No se pudo subir el archivo' })
 
-router.post("/", async (req, res) => {
-  try {
-    const data = req.body;
-    if (
-      data.title &&
-      data.description &&
-      data.code &&
-      data.price &&
-      data.status &&
-      data.stock &&
-      data.category
-    ) {
-      const fileSystemRepository = new FileSystemRepository()
-      const productManager = new ProductManager(fileSystemRepository);
-      await productManager.createProduct(data);
-      res.status(200).json(data);
-    } else {
-      throw new Error("falto algun dato");
+    const { title, description, price, code, stock } = req.body
+    if (!title || !description || !price || !code || !stock) {
+        return res.status(400).send({ status: 'ERR', data: 'Faltan campos obligatorios' })
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).send(err);
-  }
-});
 
-router.put("/:pid", async (req, res) => {
-  try {
-    const fileSystemRepository = new FileSystemRepository()
-    const productManager = new ProductManager(fileSystemRepository);
-    await productManager.updateProduct(Number(req.params.pid),req.body);
-    res.status(200).json(req.body);
-  } catch (error) {
-    res.status(400).json({error: error.message});
-  }
-});
+    const newContent = {
+        title,
+        description,
+        price,
+        // el obj req.file está disponible porque estamos utilizando Multer como middleware,
+        // mediante el objeto uploader que estamos importando e inyectando.
+        thumbnail: req.file.filename,
+        code,
+        stock
+    }
 
-router.delete("/:pid", async (req, res) => {
-  try {
-    const fileSystemRepository = new FileSystemRepository()
-    const productManager = new ProductManager(fileSystemRepository);
-    const products = await productManager.deleteProduct(Number(req.params.pid),req.body);
-    res.status(200).json(products);
-  } catch (error) {
-    res.status(400).json({error: error.message});
-  }
-});
+    const result = await controller.addProduct(newContent)
+    res.status(200).send({ status: 'OK', data: result })
+})
 
-export default router;
+export default router
