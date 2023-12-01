@@ -9,19 +9,19 @@ import viewsRouter from "./routes/views.routes.js";
 import { __dirname, __filename } from "./utils.js";
 import ProductManager from "./dao/managers/productManager.js";
 import { FileSystemRepository } from "./repository/fileSystemRepository.js";
-
+import dotenv from 'dotenv'
 const PORT = 8080;
+dotenv.config()
 
 const app = express();
 const httpServer = app.listen(PORT, () => {
   console.log(`Servidor de Express activo en el puerto ${PORT}`);
 });
 const socketServer = new Server(httpServer);
-
 const fileSystemRepository = new FileSystemRepository();
 const productManager = new ProductManager(fileSystemRepository);
 const prods = await productManager.getProducts();
-const mongooseURI = "mongodb+srv://abarbone:K0C477MrNAlpgjFO@ecommerce.xgrnaco.mongodb.net/";
+// const mongooseURI = "mongodb+srv://abarbone:K0C477MrNAlpgjFO@ecommerce.xgrnaco.mongodb.net/";
 
 socketServer.on("connection", (socket) => {
   console.log(socket.id);
@@ -35,7 +35,7 @@ socketServer.on("connection", (socket) => {
 
 app.use(express.json());
 try {
-  mongoose.connect(mongooseURI).then(() => console.log("Base de datos conectada"));
+  mongoose.connect(process.env.mongooseURI).then(() => console.log("Base de datos conectada"));
 } catch (error) {
   console.log(`Error al iniciar servidor (${error.message})`);
 }

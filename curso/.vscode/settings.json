@@ -1,4 +1,5 @@
 {
+    "editor.inlineSuggest.showToolbar": "onHover",
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#c65c46",
         "activityBar.background": "#c65c46",
